@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import Link from 'next/link'
 import {
   FilePlus, FileText,
-  BarChart2, Users, LogOut, Bell, Menu, X,
+  BarChart2, Users, LogOut, Bell,
 } from 'lucide-react'
 import { useState } from 'react'
 import { collection, query, where, onSnapshot } from 'firebase/firestore'
@@ -23,7 +23,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { user, usuario, loading, logout } = useAuth()
   const router   = useRouter()
   const pathname = usePathname()
-  const [menu, setMenu]   = useState(false)
   const [alertas, setAlertas] = useState(0)
 
   useEffect(() => {
@@ -117,50 +116,63 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </aside>
 
-      {/* Mobile header */}
-      <div className="mobile-header lg:hidden print:hidden fixed top-0 left-0 right-0 z-50 bg-blue-900 text-white px-4 py-3 flex items-center justify-between">
+      {/* Mobile top header */}
+      <div className="lg:hidden print:hidden fixed top-0 left-0 right-0 z-50 bg-blue-900 text-white px-4 py-3 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-2">
           <span className="text-xl font-black">JBC</span>
           <span className="text-xs text-blue-300 border-l border-blue-600 pl-2">PERFIL</span>
         </div>
         <div className="flex items-center gap-3">
-          {alertas > 0 && (
-            <span className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-              {alertas}
-            </span>
-          )}
-          <button onClick={() => setMenu(!menu)}>
-            {menu ? <X size={22} /> : <Menu size={22} />}
-          </button>
+          <div className="text-right leading-tight">
+            <p className="text-xs font-semibold">{usuario!.nome.split(' ')[0]}</p>
+            <p className="text-xs text-blue-300 capitalize">{usuario!.cargo}</p>
+          </div>
+          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-bold">
+            {usuario!.nome.charAt(0).toUpperCase()}
+          </div>
         </div>
       </div>
 
-      {/* Mobile menu */}
-      {menu && (
-        <div className="lg:hidden fixed inset-0 z-40 bg-blue-900 text-white pt-16 px-4">
-          <nav className="space-y-1">
-            {navPermitido.map(n => (
-              <Link key={n.href} href={n.href} onClick={() => setMenu(false)}
-                className="flex items-center gap-3 px-3 py-3 rounded-lg text-base font-medium text-blue-100 hover:bg-blue-800">
-                <n.icon size={20} />
-                {n.label}
-              </Link>
-            ))}
-          </nav>
-          <button onClick={logout}
-            className="flex items-center gap-2 text-sm text-blue-300 px-3 py-3 mt-4">
-            <LogOut size={16} /> Sair
-          </button>
-        </div>
-      )}
+      {/* Mobile bottom nav */}
+      <nav className="lg:hidden print:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 flex shadow-[0_-2px_8px_rgba(0,0,0,0.08)]">
+        {navPermitido.map(n => {
+          const active = pathname === n.href || pathname.startsWith(n.href + '/')
+          return (
+            <Link key={n.href} href={n.href}
+              className={`flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-[10px] font-medium transition min-w-0 relative
+                ${active ? 'text-blue-700' : 'text-gray-400 hover:text-gray-700'}`}>
+              {active && <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-blue-700 rounded-b-full" />}
+              <n.icon size={20} strokeWidth={active ? 2.5 : 1.75} />
+              <span className="truncate w-full text-center px-1">{n.label}</span>
+              {n.href === '/alertas' && alertas > 0 && (
+                <span className="absolute top-1.5 right-1/2 translate-x-3 bg-red-500 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                  {alertas > 9 ? '9+' : alertas}
+                </span>
+              )}
+            </Link>
+          )
+        })}
+        <button onClick={logout}
+          className="flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-[10px] font-medium text-gray-400 hover:text-red-500 transition min-w-0">
+          <LogOut size={20} strokeWidth={1.75} />
+          <span>Sair</span>
+        </button>
+      </nav>
 
       {/* Conteúdo */}
-      <main className="flex-1 lg:ml-0 pt-14 lg:pt-0 overflow-auto">
-        {/* Barra de alertas */}
+      <main className="flex-1 lg:ml-0 pt-14 lg:pt-0 pb-16 lg:pb-0 overflow-auto">
+        {/* Barra de alertas desktop */}
         {alertas > 0 && (
           <Link href="/alertas" className="hidden lg:flex bg-amber-50 border-b border-amber-200 px-6 py-2 items-center gap-2 text-sm text-amber-800 hover:bg-amber-100 transition">
             <Bell size={14} className="text-amber-600" />
             <strong>{alertas}</strong> alerta{alertas > 1 ? 's' : ''} não lido{alertas > 1 ? 's' : ''} — clique para ver
+          </Link>
+        )}
+        {/* Barra de alertas mobile */}
+        {alertas > 0 && (
+          <Link href="/alertas" className="lg:hidden flex bg-amber-50 border-b border-amber-200 px-4 py-2 items-center gap-2 text-sm text-amber-800">
+            <Bell size={13} className="text-amber-600 shrink-0" />
+            <span><strong>{alertas}</strong> alerta{alertas > 1 ? 's' : ''} não lido{alertas > 1 ? 's' : ''}</span>
           </Link>
         )}
         <div className="p-4 lg:p-6">{children}</div>

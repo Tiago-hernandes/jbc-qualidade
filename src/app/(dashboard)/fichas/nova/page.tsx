@@ -89,23 +89,23 @@ export default function NovaFichaPage() {
   )
 
   return (
-    <form className="max-w-4xl mx-auto space-y-6">
+    <form className="max-w-4xl mx-auto space-y-5">
       {/* Cabeçalho */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-gray-900">Nova Ficha de Qualidade</h1>
-          <p className="text-sm text-gray-500">Preencha todos os campos obrigatórios</p>
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-xl font-bold text-gray-900 leading-tight">Nova Ficha</h1>
+          <p className="text-xs text-gray-500 mt-0.5 hidden sm:block">Preencha todos os campos obrigatórios</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 shrink-0">
           <button type="button" onClick={handleSubmit(d => onSubmit(d, 'rascunho'))}
             disabled={isSubmitting}
-            className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50">
-            <Save size={15} /> Rascunho
+            className="flex items-center gap-1.5 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50">
+            <Save size={14} /> <span className="hidden sm:inline">Rascunho</span><span className="sm:hidden">Salvar</span>
           </button>
           <button type="button" onClick={handleSubmit(d => onSubmit(d, 'pendente'))}
             disabled={isSubmitting}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-700 text-white rounded-lg text-sm font-medium hover:bg-blue-800 disabled:opacity-50">
-            <Send size={15} /> Enviar
+            className="flex items-center gap-1.5 px-3 py-2 bg-blue-700 text-white rounded-lg text-sm font-medium hover:bg-blue-800 disabled:opacity-50">
+            <Send size={14} /> Enviar
           </button>
         </div>
       </div>

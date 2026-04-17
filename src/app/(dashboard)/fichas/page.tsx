@@ -81,27 +81,27 @@ export default function FichasPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-gray-900">Fichas de Qualidade</h1>
-          <p className="text-sm text-gray-500">
-            {filtradas.length} ficha{filtradas.length !== 1 ? 's' : ''} encontrada{filtradas.length !== 1 ? 's' : ''}
-            {totalPaginas > 1 && ` — página ${pagina} de ${totalPaginas}`}
+          <p className="text-xs text-gray-500 mt-0.5">
+            {filtradas.length} ficha{filtradas.length !== 1 ? 's' : ''}
+            {totalPaginas > 1 && ` · pág. ${pagina}/${totalPaginas}`}
           </p>
         </div>
         <Link href="/fichas/nova"
-          className="flex items-center gap-2 px-4 py-2 bg-blue-700 text-white rounded-lg text-sm font-medium hover:bg-blue-800">
-          <FilePlus size={16} /> Nova Ficha
+          className="flex items-center gap-1.5 px-3 py-2 bg-blue-700 text-white rounded-lg text-sm font-medium hover:bg-blue-800 shrink-0">
+          <FilePlus size={15} /> <span className="hidden sm:inline">Nova Ficha</span><span className="sm:hidden">Nova</span>
         </Link>
       </div>
 
       {/* Filtros */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col sm:flex-row gap-2">
         <div className="relative flex-1">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input value={busca} onChange={e => setBusca(e.target.value)}
-            placeholder="Buscar por número, assunto, cliente, setor..."
-            className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            placeholder="Buscar número, assunto, cliente..."
+            className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
         </div>
         <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}
-          className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          className="border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
           <option value="">Todos os status</option>
           {STATUS_FILTRO.map(v => (
             <option key={v} value={v}>{STATUS_CONFIG[v].label}</option>
@@ -109,7 +109,7 @@ export default function FichasPage() {
         </select>
       </div>
 
-      {/* Tabela */}
+      {/* Lista */}
       {loading ? (
         <div className="flex justify-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-700" />
@@ -120,84 +120,144 @@ export default function FichasPage() {
           <p className="text-sm mt-1">Crie uma nova ficha para começar</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-100 bg-gray-50">
-                  <th className="text-left px-4 py-3 font-semibold text-gray-600">Nº</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-600">Assunto</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-600">Setor</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-600">Prioridade</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-600">Status</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-600">Data</th>
-                  <th className="px-4 py-3" />
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {paginadas.map(f => {
-                  const sc = STATUS_CONFIG[f.status]
-                  const pc = PRIORIDADE_CONFIG[f.prioridade as keyof typeof PRIORIDADE_CONFIG]
-                  return (
-                    <tr key={f.id} className="hover:bg-gray-50 transition">
-                      <td className="px-4 py-3 font-mono font-medium text-blue-700">{f.numero}</td>
-                      <td className="px-4 py-3 max-w-xs">
-                        <p className="truncate font-medium text-gray-900">{f.assunto || '—'}</p>
-                        <p className="text-xs text-gray-400">{f.cliente}</p>
-                      </td>
-                      <td className="px-4 py-3 text-gray-600">{f.setor}</td>
-                      <td className={`px-4 py-3 font-medium ${pc?.color}`}>{pc?.label}</td>
-                      <td className="px-4 py-3">
-                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${sc?.color}`}>
-                          {f.reincidencias > 0 && f.status !== 'concluido' && <AlertTriangle size={10} />}
-                          {sc?.label}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-gray-500">
-                        {f.data}
-                        {prazoVencido(f) && (
-                          <span className="ml-2 inline-flex items-center gap-0.5 text-xs text-red-600 font-medium">
-                            <AlertTriangle size={10} /> prazo vencido
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <Link href={`/fichas/${f.id}`}
-                            className="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium text-sm">
-                            <Eye size={14} /> Ver
-                          </Link>
-                          <Link href={`/imprimir/${f.id}`} target="_blank"
-                            title="Imprimir" className="text-gray-400 hover:text-gray-700 transition">
-                            <Printer size={14} />
-                          </Link>
-                          <Link href={`/imprimir/${f.id}?share=1`} target="_blank"
-                            title="Compartilhar PDF" className="text-gray-400 hover:text-green-600 transition">
-                            <MessageCircle size={14} />
-                          </Link>
-                          <a href={`mailto:?subject=${encodeURIComponent(`Ficha de Qualidade — ${f.numero}`)}&body=${encodeURIComponent(
-                            `FICHA DE QUALIDADE — ${f.numero}\n\nAssunto: ${f.assunto || '—'}\nSetor: ${f.setor}\nCliente: ${f.cliente || '—'}\nStatus: ${STATUS_CONFIG[f.status]?.label}\nPrioridade: ${f.prioridade}\nData: ${f.data}\n\nAcesse o sistema para ver os detalhes completos.`
-                          )}`}
-                            title="Enviar por e-mail" className="text-gray-400 hover:text-blue-600 transition">
-                            <Mail size={14} />
-                          </a>
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+        <>
+          {/* Cards — mobile */}
+          <div className="sm:hidden space-y-3">
+            {paginadas.map(f => {
+              const sc = STATUS_CONFIG[f.status]
+              const pc = PRIORIDADE_CONFIG[f.prioridade as keyof typeof PRIORIDADE_CONFIG]
+              return (
+                <Link key={f.id} href={`/fichas/${f.id}`}
+                  className="block bg-white rounded-xl border border-gray-200 p-4 active:bg-gray-50 transition">
+                  {/* Topo: número + badges */}
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <span className="font-mono font-bold text-blue-700 text-sm">{f.numero}</span>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {pc && <span className={`text-xs font-semibold ${pc.color}`}>{pc.label}</span>}
+                      <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-medium ${sc?.color}`}>
+                        {f.reincidencias > 0 && f.status !== 'concluido' && <AlertTriangle size={9} />}
+                        {sc?.label}
+                      </span>
+                    </div>
+                  </div>
+                  {/* Assunto */}
+                  <p className="font-semibold text-gray-900 text-sm leading-snug mb-1">
+                    {f.assunto || <span className="text-gray-400 italic">Sem assunto</span>}
+                  </p>
+                  {/* Meta */}
+                  <div className="flex items-center gap-3 text-xs text-gray-400 flex-wrap">
+                    {f.cliente && <span>{f.cliente}</span>}
+                    <span>{f.setor}</span>
+                    <span>{f.data}</span>
+                    {prazoVencido(f) && (
+                      <span className="inline-flex items-center gap-0.5 text-red-600 font-medium">
+                        <AlertTriangle size={9} /> prazo vencido
+                      </span>
+                    )}
+                  </div>
+                  {/* Ações rápidas */}
+                  <div className="flex items-center gap-3 mt-3 pt-3 border-t border-gray-100">
+                    <span className="flex items-center gap-1 text-blue-600 text-xs font-medium">
+                      <Eye size={13} /> Ver detalhes
+                    </span>
+                    <Link href={`/imprimir/${f.id}`} target="_blank"
+                      onClick={e => e.stopPropagation()}
+                      className="flex items-center gap-1 text-gray-400 text-xs">
+                      <Printer size={13} /> Imprimir
+                    </Link>
+                    <a href={`mailto:?subject=${encodeURIComponent(`Ficha — ${f.numero}`)}&body=${encodeURIComponent(`FICHA ${f.numero}\n\n${f.assunto || ''}\nSetor: ${f.setor}\nStatus: ${STATUS_CONFIG[f.status]?.label}`)}`}
+                      onClick={e => e.stopPropagation()}
+                      className="flex items-center gap-1 text-gray-400 text-xs">
+                      <Mail size={13} /> E-mail
+                    </a>
+                  </div>
+                </Link>
+              )
+            })}
           </div>
+
+          {/* Tabela — desktop */}
+          <div className="hidden sm:block bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-100 bg-gray-50">
+                    <th className="text-left px-4 py-3 font-semibold text-gray-600">Nº</th>
+                    <th className="text-left px-4 py-3 font-semibold text-gray-600">Assunto</th>
+                    <th className="text-left px-4 py-3 font-semibold text-gray-600">Setor</th>
+                    <th className="text-left px-4 py-3 font-semibold text-gray-600">Prioridade</th>
+                    <th className="text-left px-4 py-3 font-semibold text-gray-600">Status</th>
+                    <th className="text-left px-4 py-3 font-semibold text-gray-600">Data</th>
+                    <th className="px-4 py-3" />
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {paginadas.map(f => {
+                    const sc = STATUS_CONFIG[f.status]
+                    const pc = PRIORIDADE_CONFIG[f.prioridade as keyof typeof PRIORIDADE_CONFIG]
+                    return (
+                      <tr key={f.id} className="hover:bg-gray-50 transition">
+                        <td className="px-4 py-3 font-mono font-medium text-blue-700">{f.numero}</td>
+                        <td className="px-4 py-3 max-w-xs">
+                          <p className="truncate font-medium text-gray-900">{f.assunto || '—'}</p>
+                          <p className="text-xs text-gray-400">{f.cliente}</p>
+                        </td>
+                        <td className="px-4 py-3 text-gray-600">{f.setor}</td>
+                        <td className={`px-4 py-3 font-medium ${pc?.color}`}>{pc?.label}</td>
+                        <td className="px-4 py-3">
+                          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${sc?.color}`}>
+                            {f.reincidencias > 0 && f.status !== 'concluido' && <AlertTriangle size={10} />}
+                            {sc?.label}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-gray-500">
+                          {f.data}
+                          {prazoVencido(f) && (
+                            <span className="ml-2 inline-flex items-center gap-0.5 text-xs text-red-600 font-medium">
+                              <AlertTriangle size={10} /> prazo vencido
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <Link href={`/fichas/${f.id}`}
+                              className="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium text-sm">
+                              <Eye size={14} /> Ver
+                            </Link>
+                            <Link href={`/imprimir/${f.id}`} target="_blank"
+                              title="Imprimir" className="text-gray-400 hover:text-gray-700 transition">
+                              <Printer size={14} />
+                            </Link>
+                            <Link href={`/imprimir/${f.id}?share=1`} target="_blank"
+                              title="Compartilhar PDF" className="text-gray-400 hover:text-green-600 transition">
+                              <MessageCircle size={14} />
+                            </Link>
+                            <a href={`mailto:?subject=${encodeURIComponent(`Ficha de Qualidade — ${f.numero}`)}&body=${encodeURIComponent(
+                              `FICHA DE QUALIDADE — ${f.numero}\n\nAssunto: ${f.assunto || '—'}\nSetor: ${f.setor}\nCliente: ${f.cliente || '—'}\nStatus: ${STATUS_CONFIG[f.status]?.label}\nPrioridade: ${f.prioridade}\nData: ${f.data}\n\nAcesse o sistema para ver os detalhes completos.`
+                            )}`}
+                              title="Enviar por e-mail" className="text-gray-400 hover:text-blue-600 transition">
+                              <Mail size={14} />
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Paginação */}
           {totalPaginas > 1 && (
-            <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
+            <div className="flex items-center justify-between px-1 py-2">
               <p className="text-xs text-gray-500">
-                Mostrando {(pagina - 1) * POR_PAGINA + 1}–{Math.min(pagina * POR_PAGINA, filtradas.length)} de {filtradas.length}
+                {(pagina - 1) * POR_PAGINA + 1}–{Math.min(pagina * POR_PAGINA, filtradas.length)} de {filtradas.length}
               </p>
               <div className="flex gap-1">
                 <button onClick={() => setPagina(p => Math.max(1, p - 1))} disabled={pagina === 1}
-                  className="px-3 py-1.5 text-xs border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50">
-                  ← Anterior
+                  className="px-3 py-1.5 text-xs border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50 bg-white">
+                  ← Ant.
                 </button>
                 {Array.from({ length: totalPaginas }, (_, i) => i + 1)
                   .filter(p => p === 1 || p === totalPaginas || Math.abs(p - pagina) <= 1)
@@ -210,19 +270,19 @@ export default function FichasPage() {
                     <span key={`e${i}`} className="px-2 py-1.5 text-xs text-gray-400">…</span>
                   ) : (
                     <button key={p} onClick={() => setPagina(p as number)}
-                      className={`px-3 py-1.5 text-xs border rounded-lg ${pagina === p ? 'bg-blue-700 text-white border-blue-700' : 'border-gray-200 hover:bg-gray-50'}`}>
+                      className={`px-3 py-1.5 text-xs border rounded-lg ${pagina === p ? 'bg-blue-700 text-white border-blue-700' : 'border-gray-200 hover:bg-gray-50 bg-white'}`}>
                       {p}
                     </button>
                   ))
                 }
                 <button onClick={() => setPagina(p => Math.min(totalPaginas, p + 1))} disabled={pagina === totalPaginas}
-                  className="px-3 py-1.5 text-xs border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50">
-                  Próxima →
+                  className="px-3 py-1.5 text-xs border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50 bg-white">
+                  Próx. →
                 </button>
               </div>
             </div>
           )}
-        </div>
+        </>
       )}
     </div>
   )
