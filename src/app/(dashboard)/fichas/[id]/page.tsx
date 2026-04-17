@@ -300,9 +300,9 @@ export default function FichaDetalhe() {
 
   const Campo = ({ label, value }: { label: string; value?: string | null }) => (
     value ? (
-      <div>
+      <div className="min-w-0">
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-0.5">{label}</p>
-        <p className="text-sm text-gray-900">{value}</p>
+        <p className="text-sm text-gray-900 break-words">{value}</p>
       </div>
     ) : null
   )
@@ -317,85 +317,85 @@ export default function FichaDetalhe() {
   )
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-5">
       {/* Cabeçalho */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-3">
+      <div className="space-y-3">
+
+        {/* Linha 1: voltar + número + badges */}
+        <div className="flex items-start gap-3">
           <button onClick={() => router.push('/fichas')}
-            className="p-2 rounded-lg hover:bg-gray-100 text-gray-500">
+            className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 shrink-0 mt-0.5">
             <ArrowLeft size={18} />
           </button>
-          <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-xl font-bold text-gray-900 font-mono">{ficha.numero}</h1>
-              <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${sc.bg} ${sc.color}`}>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-lg font-bold text-gray-900 font-mono">{ficha.numero}</h1>
+              <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap ${sc.bg} ${sc.color}`}>
                 {sc.label}
               </span>
               {ficha.reincidencias > 0 && (
-                <span className="flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
-                  <AlertTriangle size={11} /> {ficha.reincidencias}x recorrência
+                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700 whitespace-nowrap">
+                  <AlertTriangle size={10} /> {ficha.reincidencias}x recorrência
                 </span>
               )}
             </div>
-            <p className="text-sm text-gray-500 mt-0.5">{ficha.assunto || 'Sem assunto'}</p>
+            <p className="text-sm text-gray-500 mt-0.5 truncate">{ficha.assunto || 'Sem assunto'}</p>
           </div>
         </div>
 
-        {/* Ações */}
-        <div className="flex items-center gap-2 flex-wrap justify-end">
+        {/* Linha 2: progresso de assinaturas */}
+        {!['cancelado','concluido','rascunho'].includes(ficha.status) && (
+          <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-600 w-fit">
+            <span className={emitenteAssinou ? 'text-green-600 font-semibold' : 'text-gray-400'}>
+              {emitenteAssinou ? '✓' : '○'} Emitente
+            </span>
+            <span className="text-gray-300">|</span>
+            <span className={gerenteAssinou ? 'text-green-600 font-semibold' : 'text-gray-400'}>
+              {gerenteAssinou ? '✓' : '○'} Gerente
+            </span>
+          </div>
+        )}
 
-          {/* Indicador de progresso de assinaturas */}
-          {!['cancelado','concluido','rascunho'].includes(ficha.status) && (
-            <div className="flex items-center gap-1.5 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-600">
-              <span className={emitenteAssinou ? 'text-green-600 font-semibold' : 'text-gray-400'}>
-                {emitenteAssinou ? '✓' : '○'} Emitente
-              </span>
-              <span className="text-gray-300">|</span>
-              <span className={gerenteAssinou ? 'text-green-600 font-semibold' : 'text-gray-400'}>
-                {gerenteAssinou ? '✓' : '○'} Gerente
-              </span>
-            </div>
-          )}
+        {/* Linha 3: botões de ação — scroll horizontal no mobile */}
+        <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
 
-          {podeMudarStatus && !['cancelado','concluido'].includes(ficha.status) && (
-            <button onClick={() => setModalCancelar(true)} disabled={salvando}
-              className="flex items-center gap-1.5 px-3 py-2 border border-red-200 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50 disabled:opacity-50">
-              <XCircle size={14} /> Cancelar
-            </button>
-          )}
           {podeAssinar && !jaAssinou && !fichaCompleta && !['cancelado','concluido'].includes(ficha.status) && (
             <button onClick={() => setPinAberto(true)} disabled={salvando}
-              className="flex items-center gap-1.5 px-3 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50">
+              className="flex items-center gap-1.5 px-3 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 whitespace-nowrap shrink-0">
               <PenLine size={14} /> Assinar
             </button>
           )}
           {jaAssinou && (
-            <span className="flex items-center gap-1 px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm font-medium">
+            <span className="flex items-center gap-1 px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm font-medium whitespace-nowrap shrink-0">
               <CheckCircle size={14} /> Assinado
             </span>
           )}
-          {/* Compartilhar */}
+          {['rascunho','pendente'].includes(ficha.status) && ficha.assinaturas?.length === 0 && (ficha.emitenteId === usuario?.uid || usuario?.cargo === 'admin') && (
+            <Link href={`/fichas/${ficha.id}/editar`}
+              className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 whitespace-nowrap shrink-0">
+              <Pencil size={14} /> Editar
+            </Link>
+          )}
+          {podeMudarStatus && !['cancelado','concluido'].includes(ficha.status) && (
+            <button onClick={() => setModalCancelar(true)} disabled={salvando}
+              className="flex items-center gap-1.5 px-3 py-2 border border-red-200 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50 disabled:opacity-50 whitespace-nowrap shrink-0">
+              <XCircle size={14} /> Cancelar
+            </button>
+          )}
           <Link href={`/imprimir/${ficha.id}`} target="_blank"
-            className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50">
+            className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 whitespace-nowrap shrink-0">
             <Printer size={14} /> Imprimir
           </Link>
           <Link href={`/imprimir/${ficha.id}?share=1`} target="_blank"
-            className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-green-50 hover:text-green-700 hover:border-green-200">
+            className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-green-50 hover:text-green-700 hover:border-green-200 whitespace-nowrap shrink-0">
             <MessageCircle size={14} /> WhatsApp
           </Link>
           <a href={`mailto:?subject=${encodeURIComponent(`Ficha de Qualidade — ${ficha.numero}`)}&body=${encodeURIComponent(
             `FICHA DE QUALIDADE — ${ficha.numero}\n\nAssunto: ${ficha.assunto || '—'}\nSetor: ${ficha.setor}\nCliente: ${ficha.cliente || '—'}\nStatus: ${STATUS_CONFIG[ficha.status]?.label}\nPrioridade: ${ficha.prioridade}\nData: ${ficha.data}\n\nDescrição:\n${ficha.descricao || '—'}\n\nAção Corretiva:\n${ficha.acaoCorretiva || '—'}`
           )}`}
-            className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200">
+            className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 whitespace-nowrap shrink-0">
             <Mail size={14} /> E-mail
           </a>
-
-          {['rascunho','pendente'].includes(ficha.status) && ficha.assinaturas?.length === 0 && (ficha.emitenteId === usuario?.uid || usuario?.cargo === 'admin') && (
-            <Link href={`/fichas/${ficha.id}/editar`}
-              className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50">
-              <Pencil size={14} /> Editar
-            </Link>
-          )}
         </div>
       </div>
 
