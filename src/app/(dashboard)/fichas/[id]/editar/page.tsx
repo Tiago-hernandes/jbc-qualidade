@@ -82,7 +82,7 @@ export default function EditarFichaPage() {
     try {
       await atualizarFicha(ficha.id, {
         ...d,
-        setor:       ['admin','gestor'].includes(usuario?.cargo ?? '') ? d.setor : (usuario?.setor ?? ficha.setor),
+        setor:       (['admin','gestor'].includes(usuario?.cargo ?? '') ? (d.setor as string) : (usuario?.setor ?? ficha.setor)) as string,
         fotos,
         recorrencia: data.recorrencia === 'true',
         status,
