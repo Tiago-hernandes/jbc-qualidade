@@ -44,7 +44,7 @@ export default function FichasPage() {
     const constraints: any[] = [
       where('empresaId', '==', usuario.empresaId),
     ]
-    if (!['admin','gestor'].includes(usuario.cargo)) constraints.push(where('setor', '==', usuario.setor))
+    if (!['admin','gestor','qualidade'].includes(usuario.cargo)) constraints.push(where('setor', '==', usuario.setor))
 
     const q = query(collection(db, 'fichas'), ...constraints)
     const unsub = onSnapshot(q, snap => {

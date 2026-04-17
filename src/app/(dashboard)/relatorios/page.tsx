@@ -100,7 +100,7 @@ export default function RelatoriosPage() {
   const [periodo,  setPeriodo] = useState('all')
   const [setor,    setSetor]   = useState('')
 
-  const isAdminGestor = usuario && ['admin','gestor'].includes(usuario.cargo)
+  const isAdminGestor = usuario && ['admin','gestor','qualidade'].includes(usuario.cargo)
 
   const carregar = useCallback(async () => {
     if (!usuario) return

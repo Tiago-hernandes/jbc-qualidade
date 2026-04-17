@@ -21,7 +21,7 @@ export default function AlertasPage() {
     if (!usuario) return
     setLoading(true)
     try {
-      const setor = ['admin','gestor'].includes(usuario.cargo) ? undefined : usuario.setor
+      const setor = ['admin','gestor','qualidade'].includes(usuario.cargo) ? undefined : usuario.setor
       const lista = await getAlertas(usuario.empresaId, setor)
       setAlertas(lista)
     } finally {
@@ -44,7 +44,7 @@ export default function AlertasPage() {
   const marcarTodos = async () => {
     if (!usuario) return
     try {
-      const setor = ['admin','gestor'].includes(usuario.cargo) ? undefined : usuario.setor
+      const setor = ['admin','gestor','qualidade'].includes(usuario.cargo) ? undefined : usuario.setor
       await marcarTodosLidos(usuario.empresaId, setor)
       setAlertas(prev => prev.map(a => ({ ...a, lido: true })))
       toast.success('Todos os alertas marcados como lidos')
