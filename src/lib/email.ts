@@ -40,6 +40,8 @@ export async function enviarEmailFichaConcluida(ficha: Ficha, empresaId: string)
     emailsNotificacao: raw.emailsNotificacao.map(e => e.trim()),
   }
 
+  const origem = typeof window !== 'undefined' ? window.location.origin : 'https://jbc-qualidade.netlify.app'
+
   const base = {
     ficha_numero:    ficha.numero,
     ficha_assunto:   ficha.assunto || '—',
@@ -49,8 +51,16 @@ export async function enviarEmailFichaConcluida(ficha: Ficha, empresaId: string)
     ficha_cliente:   ficha.cliente || '—',
     ficha_descricao: ficha.descricao || '—',
     ficha_acao:      ficha.acaoCorretiva || '—',
-    ficha_url:       `${window.location.origin}/fichas/${ficha.id}`,
+    ficha_url:       `${origem}/fichas/${ficha.id}`,
   }
+
+  console.log('[EmailJS] Enviando notificação de ficha concluída:', {
+    serviceId:  config.serviceId,
+    templateId: config.templateId,
+    destinos:   config.emailsNotificacao,
+    fichaId:    ficha.id,
+    numero:     ficha.numero,
+  })
 
   await Promise.all(
     config.emailsNotificacao.map(email =>

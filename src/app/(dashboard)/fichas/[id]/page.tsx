@@ -291,11 +291,16 @@ export default function FichaDetalhe() {
 
       if (deveConcluir) {
         toast.success('✅ Assinaturas completas! Ficha concluída.')
-        // Envia e-mail de notificação em background (não bloqueia a UI)
+        // Envia e-mail em background sem bloquear a UI
         enviarEmailFichaConcluida(
           { ...ficha, assinaturas: novas, status: 'concluido' },
           ficha.empresaId
-        ).catch(() => {}) // silencia erros de e-mail
+        ).then(() => {
+          toast.success('📧 Notificação enviada por e-mail!', { id: 'email-ok' })
+        }).catch(err => {
+          console.error('[Email] Falha ao enviar notificação:', err)
+          toast.error('Ficha concluída, mas o e-mail de notificação falhou. Verifique as configurações de e-mail.', { duration: 6000 })
+        })
       } else {
         toast.success('Assinatura confirmada com sucesso!')
       }
