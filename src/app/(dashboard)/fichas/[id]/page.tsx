@@ -357,7 +357,7 @@ export default function FichaDetalhe() {
         )}
 
         {/* Linha 3: botões de ação — scroll horizontal no mobile */}
-        <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
+        <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap [&::-webkit-scrollbar]:hidden">
 
           {podeAssinar && !jaAssinou && !fichaCompleta && !['cancelado','concluido'].includes(ficha.status) && (
             <button onClick={() => setPinAberto(true)} disabled={salvando}
@@ -386,14 +386,24 @@ export default function FichaDetalhe() {
             className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 whitespace-nowrap shrink-0">
             <Printer size={14} /> Imprimir
           </Link>
-          <Link href={`/imprimir/${ficha.id}?share=1`} target="_blank"
+          {/* WhatsApp — abre o app direto com o resumo da ficha */}
+          <a href={`https://wa.me/?text=${encodeURIComponent(
+            `*FICHA DE QUALIDADE — ${ficha.numero}*\n\n` +
+            `📋 *Assunto:* ${ficha.assunto || '—'}\n` +
+            `🏭 *Setor:* ${ficha.setor}\n` +
+            `👤 *Cliente:* ${ficha.cliente || '—'}\n` +
+            `📊 *Status:* ${STATUS_CONFIG[ficha.status]?.label}\n` +
+            `🔴 *Prioridade:* ${ficha.prioridade || '—'}\n` +
+            `📅 *Data:* ${ficha.data}\n\n` +
+            `🔗 Acesse: ${typeof window !== 'undefined' ? window.location.href : ''}`
+          )}`} target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-green-50 hover:text-green-700 hover:border-green-200 whitespace-nowrap shrink-0">
             <MessageCircle size={14} /> WhatsApp
-          </Link>
+          </a>
           <a href={`mailto:?subject=${encodeURIComponent(`Ficha de Qualidade — ${ficha.numero}`)}&body=${encodeURIComponent(
             `FICHA DE QUALIDADE — ${ficha.numero}\n\nAssunto: ${ficha.assunto || '—'}\nSetor: ${ficha.setor}\nCliente: ${ficha.cliente || '—'}\nStatus: ${STATUS_CONFIG[ficha.status]?.label}\nPrioridade: ${ficha.prioridade}\nData: ${ficha.data}\n\nDescrição:\n${ficha.descricao || '—'}\n\nAção Corretiva:\n${ficha.acaoCorretiva || '—'}`
           )}`}
-            className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 whitespace-nowrap shrink-0">
+            className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 whitespace-nowrap shrink-0 mr-4 sm:mr-0">
             <Mail size={14} /> E-mail
           </a>
         </div>
