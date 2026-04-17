@@ -265,6 +265,15 @@ export default function FichaDetalhe() {
       )
       const deveConcluir    = emitenteAssinou && gerenteAssinou
 
+      console.log('[Assinatura] emitenteId:', ficha.emitenteId,
+        '| emitenteAssinou:', emitenteAssinou,
+        '| gerenteAssinou:', gerenteAssinou,
+        '| deveConcluir:', deveConcluir,
+        '| assinaturas:', novas.map(a => ({ userId: a.userId, cargo: a.cargo }))
+      )
+
+      const statusFinal = deveConcluir ? 'concluido' : ficha.status
+
       await atualizarFicha(ficha.id, {
         assinaturas: novas,
         ...(deveConcluir ? { status: 'concluido' } : {}),
@@ -275,7 +284,7 @@ export default function FichaDetalhe() {
         ...(deveConcluir ? { status: 'concluido' } : {}),
       } : null)
 
-      // Quando o emitente assina, notifica gerente/qualidade
+      // Quando o emitente assina, notifica gerente/qualidade via alerta interno
       if (novaAssinatura.userId === ficha.emitenteId) {
         await addDoc(collection(db, 'alertas'), {
           tipo:        'assinatura_pendente',
@@ -289,18 +298,19 @@ export default function FichaDetalhe() {
         })
       }
 
+      // Envia e-mail em toda assinatura (conclusão ou pendente)
+      const fichaParaEmail = { ...ficha, assinaturas: novas, status: statusFinal as any }
+      enviarEmailFichaConcluida(fichaParaEmail, ficha.empresaId)
+        .then(() => {
+          toast.success('📧 Notificação enviada por e-mail!', { id: 'email-ok' })
+        })
+        .catch(err => {
+          console.error('[Email] Falha:', err?.message ?? err)
+          // não bloqueia o fluxo, apenas loga
+        })
+
       if (deveConcluir) {
         toast.success('✅ Assinaturas completas! Ficha concluída.')
-        // Envia e-mail em background sem bloquear a UI
-        enviarEmailFichaConcluida(
-          { ...ficha, assinaturas: novas, status: 'concluido' },
-          ficha.empresaId
-        ).then(() => {
-          toast.success('📧 Notificação enviada por e-mail!', { id: 'email-ok' })
-        }).catch(err => {
-          console.error('[Email] Falha ao enviar notificação:', err)
-          toast.error('Ficha concluída, mas o e-mail de notificação falhou. Verifique as configurações de e-mail.', { duration: 6000 })
-        })
       } else {
         toast.success('Assinatura confirmada com sucesso!')
       }
