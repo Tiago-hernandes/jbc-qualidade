@@ -171,8 +171,12 @@ export default function FichaDetalhe() {
   const jaAssinou      = ficha.assinaturas.some(a => a.userId === usuario?.uid)
 
   // Controle de assinaturas obrigatórias
+  // O gerente deve ser uma pessoa DIFERENTE do emitente
   const emitenteAssinou = ficha.assinaturas.some(a => a.userId === ficha.emitenteId)
-  const gerenteAssinou  = ficha.assinaturas.some(a => ['gerente','qualidade','gestor','admin'].includes(a.cargo))
+  const gerenteAssinou  = ficha.assinaturas.some(a =>
+    ['gerente','qualidade','gestor','admin'].includes(a.cargo) &&
+    a.userId !== ficha.emitenteId
+  )
   const fichaCompleta   = emitenteAssinou && gerenteAssinou
 
   const mudarStatus = async (novoStatus: StatusFicha) => {
@@ -253,8 +257,12 @@ export default function FichaDetalhe() {
       const novas = [...ficha.assinaturas, novaAssinatura]
 
       // Verifica se todas as assinaturas obrigatórias foram coletadas
+      // O gerente deve ser uma pessoa DIFERENTE do emitente
       const emitenteAssinou = novas.some(a => a.userId === ficha.emitenteId)
-      const gerenteAssinou  = novas.some(a => ['gerente','qualidade','gestor','admin'].includes(a.cargo))
+      const gerenteAssinou  = novas.some(a =>
+        ['gerente','qualidade','gestor','admin'].includes(a.cargo) &&
+        a.userId !== ficha.emitenteId
+      )
       const deveConcluir    = emitenteAssinou && gerenteAssinou
 
       await atualizarFicha(ficha.id, {
