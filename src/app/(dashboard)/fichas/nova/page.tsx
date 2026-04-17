@@ -24,7 +24,7 @@ export default function NovaFichaPage() {
   const [fotos, setFotos] = useState<FotoEvidencia[]>([])
   const [uploadando, setUploadando] = useState(false)
 
-  const toUpper = (data: any) => Object.fromEntries(
+  const toUpper = (data: any): Record<string, any> => Object.fromEntries(
     Object.entries(data).map(([k, v]) => {
       const keepLower = ['prioridade', 'tipoOcorrencia', 'recorrencia', 'status']
       return [k, typeof v === 'string' && !keepLower.includes(k) ? v.toUpperCase() : v]
@@ -45,7 +45,7 @@ export default function NovaFichaPage() {
         fotos,
         assinaturas:   [],
         recorrencia:   data.recorrencia === 'true',
-      })
+      } as any)
       toast.success(status === 'rascunho' ? 'Rascunho salvo!' : 'Ficha enviada para aprovação!')
       router.push('/fichas')
     } catch {

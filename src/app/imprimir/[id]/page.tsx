@@ -228,9 +228,9 @@ export default function ImprimirFicha() {
         for (let i = 0; i < 2; i++) {
           pdf.setDrawColor(180)
           pdf.setLineWidth(0.3)
-          pdf.setLineDash([2, 2])
+          ;(pdf as any).setLineDash([2, 2])
           pdf.rect(margin + i * (contentW / 2 + 2), y, contentW / 2 - 2, 14)
-          pdf.setLineDash([])
+          ;(pdf as any).setLineDash([])
           pdf.setFontSize(7)
           pdf.setTextColor(160)
           pdf.text('Aguardando assinatura', margin + i * (contentW / 2 + 2) + (contentW / 2 - 2) / 2, y + 8, { align: 'center' })

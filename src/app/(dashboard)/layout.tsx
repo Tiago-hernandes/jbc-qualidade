@@ -64,7 +64,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return null
   }
 
-  const navPermitido = NAV.filter(n => n.cargos.includes(usuario.cargo))
+  const navPermitido = NAV.filter(n => n.cargos.includes(usuario!.cargo))
 
   return (
     <div className="min-h-screen flex bg-gray-50">
@@ -103,11 +103,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="px-4 py-4 border-t border-blue-800">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-bold">
-              {usuario.nome.charAt(0).toUpperCase()}
+              {usuario!.nome.charAt(0).toUpperCase()}
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium truncate">{usuario.nome}</p>
-              <p className="text-xs text-blue-400 capitalize">{usuario.cargo}</p>
+              <p className="text-sm font-medium truncate">{usuario!.nome}</p>
+              <p className="text-xs text-blue-400 capitalize">{usuario!.cargo}</p>
             </div>
           </div>
           <button onClick={logout}

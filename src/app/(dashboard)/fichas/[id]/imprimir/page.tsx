@@ -184,8 +184,10 @@ export default function ImprimirFicha() {
           <div className="grid grid-cols-3 gap-4 px-3">
             {ficha.assinaturas?.length > 0 ? (
               ficha.assinaturas.map((a, i) => (
-                <div key={i} className="border border-gray-200 rounded p-2 text-center">
-                  <img src={a.imagem} alt={a.nome} className="w-full h-16 object-contain mb-1" />
+                <div key={i} className="border border-green-200 bg-green-50 rounded p-2 text-center">
+                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-1">
+                    <span className="text-green-600 text-lg">✓</span>
+                  </div>
                   <p className="text-xs font-semibold text-gray-900">{a.nome}</p>
                   <p className="text-xs text-gray-500 capitalize">{a.cargo}</p>
                   <p className="text-xs text-gray-400">{new Date(a.timestamp).toLocaleDateString('pt-BR')}</p>
