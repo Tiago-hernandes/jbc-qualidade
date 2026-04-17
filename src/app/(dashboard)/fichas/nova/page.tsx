@@ -37,7 +37,7 @@ export default function NovaFichaPage() {
     try {
       await criarFicha({
         ...d,
-        setor:         ['admin','gestor','qualidade'].includes(usuario.cargo) ? d.setor : usuario.setor,
+        setor:         ['admin','gestor','qualidade','gerente'].includes(usuario.cargo) ? d.setor : usuario.setor,
         empresaId:     usuario.empresaId,
         emitenteId:    usuario.uid,
         nomeEmitente:  usuario.nome,
@@ -123,7 +123,7 @@ export default function NovaFichaPage() {
           {input('Local da Ocorrência', 'localOcorrencia', { placeholder: 'Ex: Linha 3' })}
           <div>
             <label className="block text-xs font-semibold text-gray-700 mb-1">Setor</label>
-            {['admin','gestor','qualidade'].includes(usuario?.cargo ?? '')
+            {['admin','gestor','qualidade','gerente'].includes(usuario?.cargo ?? '')
               ? <select {...register('setor')}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase">
                   {SETORES.map(s => <option key={s} value={s}>{s}</option>)}

@@ -82,7 +82,7 @@ export default function EditarFichaPage() {
     try {
       await atualizarFicha(ficha.id, {
         ...d,
-        setor:       (['admin','gestor','qualidade'].includes(usuario?.cargo ?? '') ? (d.setor as string) : (usuario?.setor ?? ficha.setor)) as string,
+        setor:       (['admin','gestor','qualidade','gerente'].includes(usuario?.cargo ?? '') ? (d.setor as string) : (usuario?.setor ?? ficha.setor)) as string,
         fotos,
         recorrencia: data.recorrencia === 'true',
         status,
@@ -175,7 +175,7 @@ export default function EditarFichaPage() {
           {inp('Local da Ocorrência','localOcorrencia', { placeholder: 'Ex: Linha 3' })}
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1">Setor</label>
-            {['admin','gestor','qualidade'].includes(usuario?.cargo ?? '')
+            {['admin','gestor','qualidade','gerente'].includes(usuario?.cargo ?? '')
               ? <select {...register('setor')}
                   className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase">
                   {SETORES.map(s => <option key={s} value={s}>{s}</option>)}

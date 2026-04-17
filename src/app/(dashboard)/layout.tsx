@@ -37,7 +37,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       const todos = snap.docs.map(d => d.data())
       const naoLidos = todos.filter(a => {
         if (a.lido) return false
-        if (!['admin','gestor','qualidade'].includes(usuario.cargo) && a.setor !== usuario.setor) return false
+        if (!['admin','gestor','qualidade','gerente'].includes(usuario.cargo) && a.setor !== usuario.setor) return false
         return true
       })
       setAlertas(naoLidos.length)
