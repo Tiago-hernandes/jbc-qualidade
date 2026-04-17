@@ -78,12 +78,12 @@ export default function NovaFichaPage() {
 
   const input = (label: string, name: string, opts: any = {}) => (
     <div>
-      <label className="block text-xs font-semibold text-gray-600 mb-1">{label}</label>
+      <label className="block text-xs font-semibold text-gray-700 mb-1">{label}</label>
       {opts.type === 'textarea'
         ? <textarea {...register(name)} rows={opts.rows || 4}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none uppercase" />
+            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none uppercase" />
         : <input {...register(name)} type={opts.type || 'text'} placeholder={opts.placeholder}
-            className={`w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500${opts.type === 'date' || opts.type === 'time' ? '' : ' uppercase'}`} />
+            className={`w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500${opts.type === 'date' || opts.type === 'time' ? '' : ' uppercase'}`} />
       }
     </div>
   )
@@ -122,14 +122,14 @@ export default function NovaFichaPage() {
           {input('Hora', 'hora', { type: 'time' })}
           {input('Local da Ocorrência', 'localOcorrencia', { placeholder: 'Ex: Linha 3' })}
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1">Setor</label>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">Setor</label>
             {['admin','gestor'].includes(usuario?.cargo ?? '')
               ? <select {...register('setor')}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase">
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase">
                   {SETORES.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               : <input readOnly value={usuario?.setor ?? ''}
-                  className="w-full border border-gray-100 bg-gray-50 rounded-lg px-3 py-2 text-sm text-gray-500 uppercase cursor-not-allowed" />
+                  className="w-full border border-gray-200 bg-gray-50 rounded-lg px-3 py-2.5 text-sm text-gray-600 uppercase cursor-not-allowed" />
             }
           </div>
           {input('Encarregado', 'encarregado', { placeholder: 'Nome do encarregado' })}
@@ -145,25 +145,25 @@ export default function NovaFichaPage() {
         </div>
         <div className="p-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1">Tipo de Ocorrência</label>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">Tipo de Ocorrência</label>
             <select {...register('tipoOcorrencia')}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
               {TIPOS.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1">Prioridade</label>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">Prioridade</label>
             <select {...register('prioridade')}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
               <option value="alta">🔴 Alta</option>
               <option value="media">🟡 Média</option>
               <option value="baixa">🟢 Baixa</option>
             </select>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1">Recorrência</label>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">Recorrência</label>
             <select {...register('recorrencia')}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
               <option value="false">Não</option>
               <option value="true">Sim</option>
             </select>
@@ -188,7 +188,7 @@ export default function NovaFichaPage() {
           </div>
           <div className="p-4">
             <textarea {...register(s.name)} rows={4}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" />
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" />
           </div>
         </section>
       ))}

@@ -98,10 +98,10 @@ export default function FichasPage() {
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input value={busca} onChange={e => setBusca(e.target.value)}
             placeholder="Buscar número, assunto, cliente..."
-            className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
+            className="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
         </div>
         <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}
-          className="border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+          className="border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
           <option value="">Todos os status</option>
           {STATUS_FILTRO.map(v => (
             <option key={v} value={v}>{STATUS_CONFIG[v].label}</option>
@@ -145,12 +145,12 @@ export default function FichasPage() {
                     {f.assunto || <span className="text-gray-400 italic">Sem assunto</span>}
                   </p>
                   {/* Meta */}
-                  <div className="flex items-center gap-3 text-xs text-gray-400 flex-wrap">
-                    {f.cliente && <span>{f.cliente}</span>}
+                  <div className="flex items-center gap-3 text-xs text-gray-500 flex-wrap">
+                    {f.cliente && <span className="font-medium text-gray-600">{f.cliente}</span>}
                     <span>{f.setor}</span>
                     <span>{f.data}</span>
                     {prazoVencido(f) && (
-                      <span className="inline-flex items-center gap-0.5 text-red-600 font-medium">
+                      <span className="inline-flex items-center gap-0.5 text-red-600 font-semibold">
                         <AlertTriangle size={9} /> prazo vencido
                       </span>
                     )}
